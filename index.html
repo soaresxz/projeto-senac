@@ -152,13 +152,12 @@
             const content = this.nextElementSibling;
 
             if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block"; // Exibe o conteúdo
+                content.style.display = "block"; 
             } else {
-                content.style.display = "none"; // Oculta o conteúdo
+                content.style.display = "none"; 
             }
         });
-
-        // Oculta tudo ao carregar a página
+        
         const content = title.nextElementSibling;
         if (content) {
             content.style.display = "none";
