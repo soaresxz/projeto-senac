@@ -146,24 +146,41 @@
     <script>
     document.addEventListener("DOMContentLoaded", function () {
     const toggleTitles = document.querySelectorAll(".toggle-title");
+    let currentOpenSection = null; 
 
     toggleTitles.forEach(title => {
         title.addEventListener("click", function () {
             const content = this.nextElementSibling;
 
+            if (currentOpenSection && currentOpenSection !== content) {
+                const iframe = currentOpenSection.querySelector('iframe');
+                if (iframe) {
+                    const src = iframe.src;
+                    iframe.src = ''; 
+                    iframe.src = src; 
+                }
+                currentOpenSection.style.display = "none"; 
+            }
+
             if (content.style.display === "none" || content.style.display === "") {
                 content.style.display = "block"; 
+                currentOpenSection = content; 
+                
+                content.scrollIntoView({ behavior: "smooth", block: "start" });
             } else {
                 content.style.display = "none"; 
+                currentOpenSection = null; 
             }
         });
-        
+
         const content = title.nextElementSibling;
         if (content) {
             content.style.display = "none";
         }
     });
 });
+
+
     </script>
     
      
