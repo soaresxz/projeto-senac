@@ -234,3 +234,29 @@ button:hover {
 .convite-btn:hover {
     background-color: #41505f;
 }
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+#home-icon {
+    font-size: 24px;
+    color: #ffffff;
+    position: fixed;
+    top: 30px;
+    left: 20px;
+    transition: color 0.3s, transform 0.2s;
+}
+
+#home-icon:hover {
+    color: #afabab;
+    transform: scale(1.2);
+}
+}
