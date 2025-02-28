@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz - Teste seus conhecimentos</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Usa o mesmo CSS -->
+    <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
     <header>
         <h1>Quiz</h1>
-        <a href="index.html">Voltar ao Início</a>
+        <a href="index.html" id="home-icon"><i class="fas fa-arrow-left"></i></a>
     </header>
 
     <section id="quiz">
@@ -55,8 +56,23 @@
                 correct: "World Wide Web"
             },
             {
+                question: "O que um firewall faz?",
+                answers: ["Protege contra acessos não autorizados", "Acelera a internet", "Criptografa senhas"],
+                correct: "Protege contra acessos não autorizados"
+            },
+            {
+                question: "O que significa a sigla Wi-Fi?",
+                answers: ["Wide Internet Frequency", "Web Interface Function", "Wireless Fidelity"],
+                correct: "Wireless Fidelity"
+            },
+            {
+                question: "Qual empresa lançou o navegador Chrome?",
+                answers: ["Microsoft", "Google", "Mozilla"],
+                correct: "Google"
+            },
+            {
                 question: "Qual a melhor sala do SENAC?",
-                answers: ["212", "212", "212"],
+                answers: ["212", "212", "212"], 
                 correct: "212"
             },
         ];
@@ -89,6 +105,13 @@
             const correctAnswer = quizData[currentQuestionIndex].correct;
             if (answer === correctAnswer) {
                 score++;
+
+                confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+                
             }
             document.querySelectorAll(".answer").forEach(btn => {
                 btn.disabled = true;
@@ -98,6 +121,9 @@
                 } else {
                     btn.style.background = "#dc3545"; 
                     btn.style.color = "white";
+                    document.getElementById("quiz-container").classList.add("shake");
+                setTimeout(() => document.getElementById("quiz-container").classList.remove("shake"), 500);
+                    
                 }
             });
 
@@ -118,5 +144,7 @@
 
         loadQuestion();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 </body>
 </html>
