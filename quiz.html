@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>Quiz</h1>
-        <a href="index.html" id="home-icon"><i class="fas fa-arrow-left"></i></a>
-    </header>
-
-    <section id="quiz">
+    <section id="name-section">
+        <h2>Digite seu nome para começar</h2>
+        <input type="text" id="name-input" placeholder="Seu nome" required>
+        <button id="start-quiz-btn">Iniciar Quiz</button>
+    </section>
+    
+    <section id="quiz" style="display: none;">
         <h2>Quiz - Teste seus conhecimentos!</h2>
         <div id="quiz-container">
             <p id="question"></p>
@@ -23,73 +24,115 @@
         <p id="result" style="font-weight: bold; margin-top: 20px;"></p>
     </section>
 
-    <script>
-        const quizData = [
-            {
-                question: "Em qual década a internet começou a ser desenvolvida?",
-                answers: ["1950", "1960", "1980"],
-                correct: "1960"
-            },
-            {
-                question: "Quem é considerado o 'pai da web'?",
-                answers: ["Bill Gates", "Tim Berners-Lee", "Steve Jobs"],
-                correct: "Tim Berners-Lee"
-            },
-            {
-                question: "Qual foi a rede precursora da internet criada pelo Departamento de Defesa dos EUA?",
-                answers: ["ARPANET", "NSFNET", "DARPANET"],
-                correct: "ARPANET"
-            },
-            {
-                question: "Qual foi o primeiro navegador web com interface gráfica amigável, lançado em 1993?",
-                answers: ["Internet Explorer", "Safari", "Mosaic"],
-                correct: "Mosaic"
-            },
-            {
-                question: "Em que contexto histórico a internet teve sua origem?",
-                answers: ["Primeira Guerra Mundial", "Guerra Fria", "Guerra do Vietnã"],
-                correct: "Guerra Fria"
-            },
-            {
-                question: "O que significa a sigla 'WWW'?",
-                answers: ["World Web Wide", "World Wide Web", "Wide World Web"],
-                correct: "World Wide Web"
-            },
-            {
-                question: "O que um firewall faz?",
-                answers: ["Protege contra acessos não autorizados", "Acelera a internet", "Criptografa senhas"],
-                correct: "Protege contra acessos não autorizados"
-            },
-            {
-                question: "O que significa a sigla Wi-Fi?",
-                answers: ["Wide Internet Frequency", "Web Interface Function", "Wireless Fidelity"],
-                correct: "Wireless Fidelity"
-            },
-            {
-                question: "Qual empresa lançou o navegador Chrome?",
-                answers: ["Microsoft", "Google", "Mozilla"],
-                correct: "Google"
-            },
-            {
-                question: "Qual a melhor sala do SENAC?",
-                answers: ["212", "212", "212"], 
-                correct: "212"
-            },
-        ];
 
+    <section id="result-section" style="display: none;">
+        <h2>Quiz Finalizado!</h2>
+        <p id="final-score"></p>
+        <h3>Ranking</h3>
+        <table id="ranking-table">
+            <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Nome</th>
+                    <th>Pontuação</th>
+                </tr>
+            </thead>
+            <tbody id="ranking-body">
+ 
+            </tbody>
+        </table>
+    </section>
+
+    
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+    
+        const firebaseConfig = {
+          apiKey: "AIzaSyBrBFtpwcvUs4lWa75OuC_fuGvxD7U2CLU",
+          authDomain: "sala212-19b36.firebaseapp.com",
+          projectId: "sala212-19b36",
+          storageBucket: "sala212-19b36.firebasestorage.app",
+          messagingSenderId: "368539585445",
+          appId: "1:368539585445:web:efde02964b07c2f466764c",
+          measurementId: "G-F5Q1310S8K"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        let playerName = ""; 
         let currentQuestionIndex = 0;
         let score = 0;
+        
 
-        const questionElement = document.getElementById("question");
-        const answersElement = document.getElementById("answers");
-        const nextButton = document.getElementById("next-btn");
-        const resultElement = document.getElementById("result");
+        function carregarRanking() {
+            const rankingRef = ref(database, "ranking/");
+            onValue(rankingRef, (snapshot) => {
+                const rankingData = snapshot.val();
+                console.log("Dados recebidos do Firebase:", rankingData);
+
+                const rankingArray = rankingData ? Object.values(rankingData) : [];
+                
+                rankingArray.sort((a, b) => b.pontuacao - a.pontuacao);
+                
+                const rankingBody = document.getElementById("ranking-body");
+                rankingBody.innerHTML = "";
+                
+                rankingArray.forEach((jogador, index) => {
+                    const row = document.createElement("tr");
+                    const posicao = document.createElement("td");
+                    const nome = document.createElement("td");
+                    const pontuacao = document.createElement("td");
+    
+                    posicao.textContent = index + 1;
+                    nome.textContent = jogador.nome;
+                    pontuacao.textContent = jogador.pontuacao;
+    
+                    row.appendChild(posicao);
+                    row.appendChild(nome);
+                    row.appendChild(pontuacao);
+    
+                    rankingBody.appendChild(row);
+                });
+            }, (error) => {
+                console.error("Erro ao carregar ranking:", error); 
+            });
+        }
+    
+        function salvarPontuacao(nome, pontuacao) {
+            push(ref(database, "ranking/"), { 
+                nome: nome, 
+                pontuacao: pontuacao 
+            }).then(() => {
+                console.log("Pontuação salva com sucesso!"); 
+            }).catch(error => {
+                console.error("Erro ao salvar pontuação:", error); 
+            });
+        }
+    
+        const quizData = [
+            { question: "Em qual década a internet começou a ser desenvolvida?", answers: ["1950", "1960", "1980"], correct: "1960" },
+            { question: "Quem é considerado o 'pai da web'?", answers: ["Bill Gates", "Tim Berners-Lee", "Steve Jobs"], correct: "Tim Berners-Lee" },
+            { question: "Qual foi a rede precursora da internet criada pelo Departamento de Defesa dos EUA?", answers: ["ARPANET", "NSFNET", "DARPANET"], correct: "ARPANET" },
+            { question: "Qual foi o primeiro navegador web com interface gráfica amigável, lançado em 1993?", answers: ["Internet Explorer", "Safari", "Mosaic"], correct: "Mosaic" },
+            { question: "Em que contexto histórico a internet teve sua origem?", answers: ["Primeira Guerra Mundial", "Guerra Fria", "Guerra do Vietnã"], correct: "Guerra Fria" },
+            { question: "O que significa a sigla 'WWW'?", answers: ["World Web Wide", "World Wide Web", "Wide World Web"], correct: "World Wide Web" },
+            { question: "O que um firewall faz?", answers: ["Protege contra acessos não autorizados", "Acelera a internet", "Criptografa senhas"], correct: "Protege contra acessos não autorizados" },
+            { question: "O que significa a sigla Wi-Fi?", answers: ["Wide Internet Frequency", "Web Interface Function", "Wireless Fidelity"], correct: "Wireless Fidelity" },
+            { question: "Qual empresa lançou o navegador Chrome?", answers: ["Microsoft", "Google", "Mozilla"], correct: "Google" },
+            { question: "Qual a melhor sala do SENAC?", answers: ["212", "212", "212"], correct: "212" }
+        ];
+    
 
         function loadQuestion() {
             const currentQuestion = quizData[currentQuestionIndex];
-            questionElement.textContent = currentQuestion.question;
+            document.getElementById("question").textContent = currentQuestion.question;
+            
+            const answersElement = document.getElementById("answers");
             answersElement.innerHTML = "";
-
+            
             currentQuestion.answers.forEach(answer => {
                 const button = document.createElement("button");
                 button.textContent = answer;
@@ -97,9 +140,10 @@
                 button.onclick = () => checkAnswer(answer);
                 answersElement.appendChild(button);
             });
-
-            nextButton.style.display = "none";
+            
+            document.getElementById("next-btn").style.display = "none";
         }
+    
 
         function checkAnswer(answer) {
             const correctAnswer = quizData[currentQuestionIndex].correct;
@@ -107,44 +151,58 @@
                 score++;
 
                 confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
-                
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
             }
-            document.querySelectorAll(".answer").forEach(btn => {
-                btn.disabled = true;
-                if (btn.textContent === correctAnswer) {
-                    btn.style.background = "#28a745"; 
-                    btn.style.color = "white";
+            
+            document.querySelectorAll(".answer").forEach(button => {
+                button.disabled = true;
+                if (button.textContent === correctAnswer) {
+                    button.style.background = "#349702"; 
+                    button.style.color = "white";
                 } else {
-                    btn.style.background = "#dc3545"; 
-                    btn.style.color = "white";
-                    document.getElementById("quiz-container").classList.add("shake");
-                setTimeout(() => document.getElementById("quiz-container").classList.remove("shake"), 500);
-                    
+                    button.style.background = "#690101"; 
+                    button.style.color = "white";
                 }
             });
-
-            nextButton.style.display = "block";
+    
+            document.getElementById("next-btn").style.display = "block";
         }
+    
 
-        nextButton.onclick = () => {
+        document.getElementById("next-btn").onclick = () => {
             currentQuestionIndex++;
             if (currentQuestionIndex < quizData.length) {
                 loadQuestion();
             } else {
-                questionElement.textContent = "Quiz finalizado!";
-                answersElement.innerHTML = "";
-                nextButton.style.display = "none";
-                resultElement.textContent = `Você acertou ${score} de ${quizData.length} perguntas!`;
+              
+                document.getElementById("quiz").style.display = "none";
+                document.getElementById("result-section").style.display = "block";
+                document.getElementById("final-score").textContent = `Você acertou ${score} de ${quizData.length} perguntas!`;
+    
+               
+                salvarPontuacao(playerName, score);
+                
+                carregarRanking();
             }
         };
+    
+        document.getElementById("start-quiz-btn").onclick = () => {
+            playerName = document.getElementById("name-input").value;
+            if (!playerName) {
+                alert("Por favor, insira seu nome para continuar!");
+                return;
+            }
 
-        loadQuestion();
+            document.getElementById("name-section").style.display = "none";
+            document.getElementById("quiz").style.display = "block";
+            loadQuestion(); 
+        };
+
+        
     </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
 </body>
 </html>
