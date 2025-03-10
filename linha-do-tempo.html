@@ -24,59 +24,59 @@
             
             <div class="event">
                 <h3>1969 - ARPANET</h3>
-                <p>Primeira rede de computadores, precursora da internet.</p>
+                <p1>Primeira rede de computadores, precursora da internet.</p1>
             </div>
             <div class="event">
                 <h3>1972 - TCP/IP</h3>
-                <p>Ray Tomlinson desenvolve o primeiro sistema de e-mail, permitindo a troca de mensagens entre computadores.</p>
+                <p1>Ray Tomlinson desenvolve o primeiro sistema de e-mail, permitindo a troca de mensagens entre computadores.</p1>
             </div>
             <div class="event">
                 <h3>1974 - TCP/IP</h3>
-                <p>Introdução do termo "internet" na publicação da especificação do Protocolo de Controle de Transmissão (TCP). </p>
+                <p1>Introdução do termo "internet" na publicação da especificação do Protocolo de Controle de Transmissão (TCP). </p1>
             </div>
             <div class="event">
                 <h3>1983 - TCP/IP</h3>
-                <p>Transição da ARPANET para o protocolo TCP/IP, estabelecendo a base técnica da internet moderna.</p>
+                <p1>Transição da ARPANET para o protocolo TCP/IP, estabelecendo a base técnica da internet moderna.</p1>
             </div>
             <div class="event">
                 <h3>1989 - 1º Navegador</h3>
-                <p>Berners-Lee desenvolve o primeiro navegador e servidor web, tornando a navegação na internet mais acessível.</p>
+                <p1>Berners-Lee desenvolve o primeiro navegador e servidor web, tornando a navegação na internet mais acessível.</p1>
             </div>
             <div class="event">
                 <h3>1993 - Mosaic</h3>
-                <p> Lançamento do Mosaic, o primeiro navegador web com interface gráfica amigável, contribuindo para a popularização da internet.</p>
+                <p1> Lançamento do Mosaic, o primeiro navegador web com interface gráfica amigável, contribuindo para a popularização da internet.</p1>
             </div>
             <div class="event">
                 <h3>1995 - NSFNET</h3>
-                <p>A NSFNET é desativada, permitindo o uso comercial da internet e o surgimento de provedores de acesso para o público em geral.</p>
+                <p1>A NSFNET é desativada, permitindo o uso comercial da internet e o surgimento de provedores de acesso para o público em geral.</p1>
             </div>
             <div class="event">
                 <h3>2004 - FACEBOOK</h3>
-                <p>Lançamento do Facebook, iniciando a era das redes sociais e transformando a interação online.</p>
+                <p1>Lançamento do Facebook, iniciando a era das redes sociais e transformando a interação online.</p1>
             </div>
             <div class="event">
                 <h3>2005 - YOUTUBE</h3>
-                <p>Criação do YouTube, revolucionando o compartilhamento e consumo de vídeos na internet.</p>
+                <p1>Criação do YouTube, revolucionando o compartilhamento e consumo de vídeos na internet.</p1>
             </div>
             <div class="event">
                 <h3>2006 - TWITTER</h3>
-                <p>Lançamento do Twitter, popularizando o conceito de microblogging e comunicação em tempo real.</p>
+                <p1>Lançamento do Twitter, popularizando o conceito de microblogging e comunicação em tempo real.</p1>
             </div>
             <div class="event">
                 <h3>2010 - EXPANSÃO</h3>
-                <p>Expansão do uso de smartphones e redes 4G, tornando a internet móvel uma realidade para bilhões de pessoas.</p>
+                <p1>Expansão do uso de smartphones e redes 4G, tornando a internet móvel uma realidade para bilhões de pessoas.</p1>
             </div>
             <div class="event">
                 <h3>2015 - IoT</h3>
-                <p>A Internet das Coisas (IoT) ganha destaque, conectando dispositivos do cotidiano à internet e ampliando seu alcance.</p>
+                <p1>A Internet das Coisas (IoT) ganha destaque, conectando dispositivos do cotidiano à internet e ampliando seu alcance.</p1>
             </div>
             <div class="event">
                 <h3>2020 - 5G</h3>
-                <p>Implementação das redes 5G em diversas partes do mundo, oferecendo velocidades superiores e menor latência, impulsionando novas aplicações e serviços.</p>
+                <p1>Implementação das redes 5G em diversas partes do mundo, oferecendo velocidades superiores e menor latência, impulsionando novas aplicações e serviços.</p1>
             </div>
             <div class="event">
                 <h3>2021 - SEGURANÇA DE DADOS</h3>
-                <p>Discussões sobre privacidade, segurança de dados e regulação da internet se intensificam, refletindo a crescente importância da rede na sociedade moderna.</p>
+                <p1>Discussões sobre privacidade, segurança de dados e regulação da internet se intensificam, refletindo a crescente importância da rede na sociedade moderna.</p1>
             </div>
             
             
@@ -85,22 +85,20 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const events = document.querySelectorAll(".event");
+    const events = document.querySelectorAll(".event");
 
-            function checkScroll() {
-                const triggerBottom = window.innerHeight * 0.8;
-
-                events.forEach(event => {
-                    const eventTop = event.getBoundingClientRect().top;
-                    if (eventTop < triggerBottom) {
-                        event.classList.add("show");
-                    }
-                });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("show");
             }
-
-            window.addEventListener("scroll", checkScroll);
-            checkScroll();
         });
+    }, {
+        threshold: 0.5 
+    });
+
+    events.forEach(event => observer.observe(event));
+});
     </script>
 </body>
 </html>
